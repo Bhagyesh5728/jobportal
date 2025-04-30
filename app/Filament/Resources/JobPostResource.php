@@ -81,7 +81,11 @@ class JobPostResource extends Resource
     public static function table(Table $table): Table
     {   
         $table = $table->modifyQueryUsing(function (Builder $query) {
-            return $query->where('user_id', Auth::id());
+            if (!Auth::user()->hasRole('Admin')) {
+                return $query->where('user_id', Auth::id());
+            }
+    
+            return $query;
         });
         
         return $table
